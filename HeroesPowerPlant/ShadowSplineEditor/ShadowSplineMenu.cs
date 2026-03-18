@@ -94,10 +94,6 @@ namespace HeroesPowerPlant.ShadowSplineEditor {
             var result = MessageBox.Show("Export All?", "Option", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.No)
             {
-                if (listBoxSplines.SelectedIndex == -1)
-                {
-                    return;
-                }
                 VistaSaveFileDialog saveSpline = new VistaSaveFileDialog()
                 {
                     Filter = ".obj files|*.obj",

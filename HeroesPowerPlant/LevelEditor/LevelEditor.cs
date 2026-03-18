@@ -1,4 +1,5 @@
-﻿using HeroesONE_R.Structures;
+﻿using Collada141;
+using HeroesONE_R.Structures;
 using HeroesONE_R.Structures.Subsctructures;
 using HeroesPowerPlant.ShadowSplineEditor;
 using HeroesPowerPlant.Shared.IO.Config;
@@ -22,7 +23,6 @@ namespace HeroesPowerPlant.LevelEditor
     {
         // Internal value to determine if chunk isolation is active.
         private bool isolationActive = false;
-        private bool doingWork = false;
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
@@ -71,7 +71,6 @@ namespace HeroesPowerPlant.LevelEditor
             SetHeroesMode();
             ResetEveryting();
             _unsavedChangesLevel = false;
-            doingWork = false;
             textBox_import_extension.Text = ".BSP";
         }
 
@@ -349,7 +348,6 @@ namespace HeroesPowerPlant.LevelEditor
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
-            doingWork = true;
             for (int i = 0; i < bspRenderer.BSPList.Count; i++)
             {
                 if (listViewLevelModels.SelectedIndices.Contains(i))
@@ -363,7 +361,6 @@ namespace HeroesPowerPlant.LevelEditor
                     i -= 1;
                 }
             }
-            doingWork = false;
             InitBSPList();
         }
 
@@ -406,11 +403,6 @@ namespace HeroesPowerPlant.LevelEditor
             foreach (var bsp in bspRenderer.BSPList)
                 bsp.isSelected = false;
 
-            if (doingWork)
-            {
-                return;
-            }
-
             uint vertices = 0;
             uint triangles = 0;
 
@@ -443,7 +435,6 @@ namespace HeroesPowerPlant.LevelEditor
 
             ShadowLevelMenuItemCollisionEditor.Enabled = false;
             ShadowLevelMenuItemSplineEditor.Enabled = false;
-            ShadowLevelMenuItemSaveSplineDataOnly.Enabled = false;
             ShadowLevelMenuItemImportBLK.Enabled = false;
 
             shadowCollisionEditor.Hide();
@@ -469,7 +460,6 @@ namespace HeroesPowerPlant.LevelEditor
 
             ShadowLevelMenuItemCollisionEditor.Enabled = true;
             ShadowLevelMenuItemSplineEditor.Enabled = true;
-            ShadowLevelMenuItemSaveSplineDataOnly.Enabled = true;
             ShadowLevelMenuItemImportBLK.Enabled = true;
             buttonImport.Enabled = true;
 
@@ -612,7 +602,7 @@ namespace HeroesPowerPlant.LevelEditor
             }
 
             if (error)
-                MessageBox.Show("WARNING: Some of the files have an unknown chunk number. Fix & save again, otherwise these files will be lost: " + filesWithError);
+                MessageBox.Show("Some of the files were not included in the archives because I could not figure out their chunk number. Please fix that and save again, otherwise those files will be lost: " + filesWithError);
 
             foreach (int i in oneDict.Keys)
             {
@@ -1150,11 +1140,6 @@ namespace HeroesPowerPlant.LevelEditor
 
         private void ShadowLevelMenuItemSaveSplineDataOnly_Click(object sender, EventArgs e)
         {
-            if (openONEfilePath == null)
-            {
-                MessageBox.Show("You need to open or save the shadow level folder first!");
-                return;
-            }
             SaveShadowDATONE(Path.Combine(openONEfilePath, bspRenderer.currentShadowFolderNamePrefix + "_dat.one"), true);
         }
     }

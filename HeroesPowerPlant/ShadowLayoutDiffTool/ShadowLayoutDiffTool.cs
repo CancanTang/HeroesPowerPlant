@@ -1,18 +1,16 @@
 ﻿using HeroesPowerPlant.LayoutEditor;
 using HeroesPowerPlant.Shared.IO.Config;
-using Microsoft.VisualBasic.Logging;
 using Ookii.Dialogs.WinForms;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
-namespace HeroesPowerPlant.ShadowLayoutMiscTools
+namespace HeroesPowerPlant.ShadowLayoutDiffTool
 {
-    public partial class ShadowLayoutMiscTools : Form
+    public partial class ShadowLayoutDiffTool : Form
     {
-        public ShadowLayoutMiscTools()
+        public ShadowLayoutDiffTool()
         {
             InitializeComponent();
         }
@@ -28,7 +26,10 @@ namespace HeroesPowerPlant.ShadowLayoutMiscTools
             Hide();
         }
 
-        public void New() {}
+        public void New()
+        {
+
+        }
 
         // TODO: Expand this feature to eventually check .cam, .one for spline changes, visibility changes, and geo/coli changes
         private void buttonDiff_Click(object sender, EventArgs e)
@@ -105,57 +106,12 @@ namespace HeroesPowerPlant.ShadowLayoutMiscTools
             }
         }
 
-        private void ShadowLayoutMiscTools_Load(object sender, EventArgs e)
+        private void ShadowLayoutDiffTool_Load(object sender, EventArgs e)
         {
             if (HPPConfig.GetInstance().LegacyWindowPriorityBehavior)
                 TopMost = true;
             else
                 TopMost = false;
-
-            ComboBoxObject.DisplayMember = Name;
-            ComboBoxObject.Items.AddRange(LayoutEditorSystem.GetAllShadowObjectEntries());
-        }
-
-        private void buttonFindObjectInFiles_Click(object sender, EventArgs e)
-        {
-            var index = ComboBoxObject.SelectedIndex;
-            if (index == -1)
-            {
-                MessageBox.Show("Pick an object first!");
-                return;
-            }
-            var targetObject = (ObjectEntry)ComboBoxObject.Items[index];
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            var filesUsing = "";
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                string[] foundOnes = Directory.GetFiles(dialog.SelectedPath, "*.dat", SearchOption.AllDirectories);
-                for (int i = 0; i < foundOnes.Length; i++)
-                {
-                    if (foundOnes[i].EndsWith("_cmn.dat") || foundOnes[i].EndsWith("_nrm.dat") || foundOnes[i].EndsWith("_hrd.dat") || foundOnes[i].EndsWith("_ds1.dat"))
-                    {
-                        var layoutSystem = new LayoutEditorSystem
-                        {
-                            autoUnkBytes = false
-                        };
-                        var f = new Dictionary<(byte, byte, string), HashSet<byte[]>>();
-                        layoutSystem.OpenLayoutFile(foundOnes[i], out _, ref f);
-
-                        var layoutObjs = layoutSystem.GetAllCurrentObjectEntries();
-                        if (layoutObjs.Contains((targetObject.List, targetObject.Type)))
-                        {
-                            filesUsing += foundOnes[i].Split('\\').Last();
-                            filesUsing += Environment.NewLine;
-                            continue;
-                        }
-                    }
-                }
-                MessageBox.Show(filesUsing, "Results");
-            }
-            else
-            {
-                return;
-            }
         }
     }
 }

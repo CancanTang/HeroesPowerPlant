@@ -32,7 +32,7 @@ namespace HeroesPowerPlant.Shared.IO.Config
 
         static HPPConfig()
         {
-            ConfigPath = $"{Path.GetDirectoryName(AppContext.BaseDirectory)}\\HPPConfig.json";
+            ConfigPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\HPPConfig.json";
         }
 
         /// <summary>

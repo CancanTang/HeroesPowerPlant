@@ -1,4 +1,3 @@
-using HeroesPowerPlant.Other;
 using HeroesPowerPlant.Shared.IO.Config;
 using Ookii.Dialogs.WinForms;
 using ShadowFNT;
@@ -23,7 +22,7 @@ namespace HeroesPowerPlant.MainForm
         public Dictionary<ToolStripDropDownItem, LayoutEditor.LayoutEditor> LayoutEditorDict;
         public CameraEditor.CameraEditor CameraEditor;
         public ShadowCameraEditor.ShadowCameraEditor ShadowCameraEditor;
-        public ShadowLayoutMiscTools.ShadowLayoutMiscTools ShadowLayoutMiscTools;
+        public ShadowLayoutDiffTool.ShadowLayoutDiffTool ShadowLayoutDiffTool;
         public ParticleEditor.ParticleMenu ParticleEditor;
         public TexturePatternEditor.TexturePatternEditor TexturePatternEditor;
         public ShadowTexturePatternEditor.ShadowTexturePatternEditor ShadowTexturePatternEditor;
@@ -33,7 +32,6 @@ namespace HeroesPowerPlant.MainForm
         public SharpRenderer renderer;
         public List<string> dffsToLoad = new List<string>();
         public string currentShadowLevelRoot = "";
-        public Dictionary<string, Nukkoro2Stage> shadowNukkoro2;
 
         public List<CollisionEditor.CollisionEditor> CollisionEditors => CollisionEditorDict.Values.ToList();
         public List<LayoutEditor.LayoutEditor> LayoutEditors => LayoutEditorDict.Values.ToList();
@@ -58,7 +56,7 @@ namespace HeroesPowerPlant.MainForm
             LayoutEditorDict = new Dictionary<ToolStripDropDownItem, LayoutEditor.LayoutEditor>();
             CameraEditor = new CameraEditor.CameraEditor();
             ShadowCameraEditor = new ShadowCameraEditor.ShadowCameraEditor();
-            ShadowLayoutMiscTools = new ShadowLayoutMiscTools.ShadowLayoutMiscTools();
+            ShadowLayoutDiffTool = new ShadowLayoutDiffTool.ShadowLayoutDiffTool();
             ParticleEditor = new ParticleEditor.ParticleMenu();
             TexturePatternEditor = new TexturePatternEditor.TexturePatternEditor();
             ShadowTexturePatternEditor = new ShadowTexturePatternEditor.ShadowTexturePatternEditor();
@@ -162,7 +160,7 @@ namespace HeroesPowerPlant.MainForm
             ClearLayoutEditors();
             CameraEditor.New();
             ShadowCameraEditor.New();
-            ShadowLayoutMiscTools.New();
+            ShadowLayoutDiffTool.New();
             ParticleEditor.New();
             TexturePatternEditor.New();
             ShadowTexturePatternEditor.New();
@@ -766,18 +764,9 @@ namespace HeroesPowerPlant.MainForm
                     TeleportPlayerToCamera();
                     break;
                 case Keys.F7:
-                    if (currentShadowLevelRoot != "")
-                    {
-                        ShadowCameraEditor.Show();
-                        ShadowCameraEditor.Focus();
-                        ShadowCameraEditor.WindowState = FormWindowState.Normal;
-                    } 
-                    else
-                    {
-                        CameraEditor.Show();
-                        CameraEditor.Focus();
-                        CameraEditor.WindowState = FormWindowState.Normal;
-                    }
+                    CameraEditor.Show();
+                    CameraEditor.Focus();
+                    CameraEditor.WindowState = FormWindowState.Normal;
                     break;
                 case Keys.F8:
                     ParticleEditor.Show();
@@ -785,17 +774,9 @@ namespace HeroesPowerPlant.MainForm
                     ParticleEditor.WindowState = FormWindowState.Normal;
                     break;
                 case Keys.F9:
-                    if (currentShadowLevelRoot != "")
-                    {
-                        ShadowTexturePatternEditor.Show();
-                        ShadowTexturePatternEditor.Focus();
-                        ShadowTexturePatternEditor.WindowState = FormWindowState.Normal;
-                    } else
-                    {
-                        TexturePatternEditor.Show();
-                        TexturePatternEditor.Focus();
-                        TexturePatternEditor.WindowState = FormWindowState.Normal;
-                    }
+                    TexturePatternEditor.Show();
+                    TexturePatternEditor.Focus();
+                    TexturePatternEditor.WindowState = FormWindowState.Normal;
                     break;
                 case Keys.F10:
                     LightEditor.Show();
@@ -860,20 +841,7 @@ namespace HeroesPowerPlant.MainForm
                 renderer.Camera.AddYaw(renderer.Camera.KeyboardSensitivity);
 
             if (PressedKeys.Contains(Keys.R))
-            {
                 renderer.Camera.Reset();
-                if (shadowNukkoro2 != null && shadowNukkoro2.Count > 0)
-                {
-                    try
-                    {
-                        var shadowSpawnPosition = shadowNukkoro2[Nukkoro2.Nukkoro2StageIdentifiers[LevelEditor.bspRenderer.currentShadowFolderNamePrefix]].Player[0].Position;
-                        renderer.Camera.SetPosition(new Vector3(shadowSpawnPosition.X, shadowSpawnPosition.Y, shadowSpawnPosition.Z));
-                    } catch (Exception ex)
-                    {
-                        // ignore
-                    }
-                }
-            }
         }
 
         private void noCullingCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1265,7 +1233,7 @@ namespace HeroesPowerPlant.MainForm
             ShadowTexturePatternEditor.TopMost = value;
             SetIdTableEditor.TopMost = value;
             LightEditor.TopMost = value;
-            ShadowLayoutMiscTools.TopMost = value;
+            ShadowLayoutDiffTool.TopMost = value;
 
             allTopMost = value;
         }
@@ -1366,11 +1334,11 @@ namespace HeroesPowerPlant.MainForm
             }
         }
 
-        private void shadowLayoutMiscToolsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void shadowLayoutDiffToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShadowLayoutMiscTools.Show();
-            ShadowLayoutMiscTools.Focus();
-            ShadowLayoutMiscTools.WindowState = FormWindowState.Normal;
+            ShadowLayoutDiffTool.Show();
+            ShadowLayoutDiffTool.Focus();
+            ShadowLayoutDiffTool.WindowState = FormWindowState.Normal;
         }
 
         private void LegacyWindowPriorityBehavior_ToolStripMenuItem_Click(object sender, EventArgs e)
